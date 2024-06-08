@@ -18,7 +18,25 @@ public class Analyzer {
 		/*
 		 * Implement this method in Part 2
 		 */
-		return null;
+		if (sentences == null || sentences.isEmpty()) return new HashMap<>();
+		Map<String, Double> result = new HashMap<>();
+		Map<String, Integer> counts = new HashMap<>();
+		for (Sentence sentence : sentences) {
+			String[] text = sentence.getText().split(" ");
+			for (String word : text) {
+				word = word.toLowerCase().strip();
+				if (word.length() == 0 || word.matches("[^a-zA-Z].*")) {
+					continue;
+				} 
+				result.put(word, result.getOrDefault(word, 0.0) + sentence.getScore());
+				counts.put(word, counts.getOrDefault(word, 0) + 1);
+
+			}
+		}
+		for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+			result.put(entry.getKey(), result.getOrDefault(entry.getKey(), 0.0)/entry.getValue());
+		}
+		return result;
 	}
 	
 	/**
@@ -32,11 +50,19 @@ public class Analyzer {
 	 * @return Weighted average scores of all words in input sentence; or 0 if any error occurs
 	 */
 	public static double calculateSentenceScore(Map<String, Double> wordScores, String sentence) {
-		/*
-		 * Implement this method in Part 3
-		 */
-		return 0;
+		if (sentence == null || sentence.isEmpty()) return 0.0;
+		double num = 0.0;
+		double denom = 0.0;
+		String[] text = sentence.split(" ");
+		for (String word : text) {
+			if (word.length() == 0 || word.matches("[^a-zA-Z].*")) {
+				continue;
+			}
+			word = word.toLowerCase().strip();
+			num += wordScores.getOrDefault(word, 0.0);
+			if (wordScores.containsKey(word)) denom += 1;
+		}
+		if (denom == 0) return 0;
+		return num/denom;
 	}
-
-
 }
